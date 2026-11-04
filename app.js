@@ -3,6 +3,7 @@
   const home = byId('home-screen');
   const quiz = byId('quiz-screen');
   const result = byId('result-screen');
+  const reward = byId('reward');
   const answer = byId('answer');
   const feedback = byId('feedback');
   const checkButton = byId('check-button');
@@ -57,6 +58,7 @@
 
   function startGame() {
     clearTimeout(nextTimer);
+    resetReward();
     questions = buildQuestions(questionCount);
     currentIndex = 0;
     firstTryCount = 0;
@@ -67,9 +69,17 @@
   function finishGame() {
     byId('finished-count').textContent = questions.length;
     byId('first-try-count').textContent = firstTryCount + ' / ' + questions.length;
+    byId('success-rate').textContent = Math.round((firstTryCount / questions.length) * 100) + '%';
     byId('result-message').textContent = firstTryCount === questions.length ? '全部一次答对，你是乘法小达人！' : '每一次认真思考，都是了不起的进步。';
     showScreen(result);
+    if (questions.length > 0 && firstTryCount === questions.length) {
+      reward.hidden = false;
+    }
     byId('again-button').focus({ preventScroll: true });
+  }
+
+  function resetReward() {
+    reward.hidden = true;
   }
 
   function checkAnswer() {
@@ -132,6 +142,7 @@
     byId('start-button').focus({ preventScroll: true });
   });
   byId('home-button').addEventListener('click', () => {
+    resetReward();
     showScreen(home);
     byId('start-button').focus({ preventScroll: true });
   });
